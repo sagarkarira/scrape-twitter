@@ -1,38 +1,45 @@
-const expandHome = require('expand-home-dir')
-const touch = require('touch')
+'use strict';
 
-const SCRAPE_TWITTER_CONFIG = expandHome('~/.scrape-twitter')
+var expandHome = require('expand-home-dir');
+var touch = require('touch');
 
-touch.sync(SCRAPE_TWITTER_CONFIG)
+// var SCRAPE_TWITTER_CONFIG = expandHome('~/.scrape-twitter');
+var SCRAPE_TWITTER_CONFIG = ''
 
-const parseUsername = username => (username || '').replace('@', '')
+// touch.sync(SCRAPE_TWITTER_CONFIG);
 
-const handleError = exit => err => {
-  if (err != null) {
-    if (err.statusCode === 429) {
-      console.error(err.message)
-    } else if (err.statusCode !== 404) {
-      console.error(err.message)
-      console.error(err.stack)
+var parseUsername = function parseUsername(username) {
+  return (username || '').replace('@', '');
+};
+
+var handleError = function handleError(exit) {
+  return function (err) {
+    if (err != null) {
+      if (err.statusCode === 429) {
+        console.error(err.message);
+      } else if (err.statusCode !== 404) {
+        console.error(err.message);
+        console.error(err.stack);
+      }
+      return exit(1);
     }
-    return exit(1)
-  }
-}
+  };
+};
 
-const getEnv = () => {
-  require('dotenv').config({ path: SCRAPE_TWITTER_CONFIG })
-  const env = {
+var getEnv = function getEnv() {
+  // require('dotenv').config({ path: SCRAPE_TWITTER_CONFIG });
+  var env = {
     SCRAPE_TWITTER_CONFIG: SCRAPE_TWITTER_CONFIG,
     TWITTER_USERNAME: process.env.TWITTER_USERNAME,
     TWITTER_PASSWORD: process.env.TWITTER_PASSWORD,
     TWITTER_KDT: process.env.TWITTER_KDT // used to determine whether a new device is logging in
-  }
-  return env
-}
+  };
+  return env;
+};
 
 module.exports = {
-  SCRAPE_TWITTER_CONFIG,
-  getEnv,
-  parseUsername,
-  handleError
-}
+  SCRAPE_TWITTER_CONFIG: SCRAPE_TWITTER_CONFIG,
+  getEnv: getEnv,
+  parseUsername: parseUsername,
+  handleError: handleError
+};
