@@ -25,6 +25,7 @@
   },
   "scripts": {
     "test": "npm run -s lint && npm run -s unit",
+    "prepare": "npm run build",
     "lint": "eslint {bin,src,test} --fix",
     "unit": "jest --testEnvironment=node",
     "build": "rimraf dist && babel src --out-dir dist",
